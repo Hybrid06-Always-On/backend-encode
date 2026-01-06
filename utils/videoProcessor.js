@@ -8,15 +8,9 @@ const db = require('../config/db');      // DB 연결 모듈
 const minio = require('../config/minio'); // MinIO 업로드 모듈
 
 module.exports = {
-    /**
-     * 영상 인코딩, MinIO 업로드, DB 저장을 처리하는 함수
-     * @param {number|string} id - 영상 인덱스
-     * @param {object} row - Excel 행 데이터
-     * @param {string} VIDEO_DIR - 원본 영상 디렉토리
-     * @param {string} IMAGE_DIR - 원본 이미지 디렉토리
-     * @param {string} TEMP_DIR - 임시 HLS 저장 디렉토리
-     * @returns {boolean} 성공 여부
-     */
+
+    // 영상 인코딩, MinIO 업로드, DB 저장을 처리하는 함수
+
     processVideo: async (id, row, VIDEO_DIR, IMAGE_DIR, TEMP_DIR) => {
         // 1. DB에 이미 존재하는지 확인
         const existing = await db.connection('SELECT id FROM videos WHERE id = ?', [id]);
