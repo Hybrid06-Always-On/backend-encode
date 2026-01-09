@@ -4,11 +4,11 @@ const path = require('path');
 const excel = require('./utils/excel');               // Excel 처리 유틸
 const videoProcessor = require('./utils/videoProcessor'); // 영상 처리 유틸
 
-// 디렉토리 경로 정의
-const VIDEO_DIR = path.join(__dirname, 'video_data/video');  // 원본 영상
-const IMAGE_DIR = path.join(__dirname, 'video_data/image');  // 원본 이미지
-const TEMP_DIR = path.join(__dirname, 'temp_hls');           // 임시 HLS 저장
-const EXCEL_PATH = path.join(__dirname, 'video_data/video_matadata.xlsx'); // Excel 경로
+// 디렉토리 경로 정의 (NFS 마운트 경로: /video_data)
+const VIDEO_DIR = '/video_data/video';
+const IMAGE_DIR = '/video_data/image';
+const EXCEL_PATH = '/video_data/video_matadata.xlsx';
+const TEMP_DIR = process.env.TEMP_DIR || path.join(__dirname, 'temp_hls'); // 임시 HLS 저장
 
 // TEMP_DIR 없으면 생성
 if (!fs.existsSync(TEMP_DIR)) fs.mkdirSync(TEMP_DIR, { recursive: true });
@@ -38,4 +38,3 @@ async function main() {
 
 // 메인 함수 실행
 main();
-
