@@ -71,11 +71,26 @@ module.exports = {
 
         // 8. FFmpeg로 HLS 인코딩
         console.log(`[${id}] 인코딩 중...`);
+
         await new Promise((resolve, reject) => {
             ffmpeg(sourceVideoPath)
                 .outputOptions([
-                    '-profile:v baseline', '-level 3.0', '-start_number 0',
-                    '-hls_time 10', '-hls_list_size 0', '-f hls'
+                    '-c:v libx264',
+                    '-profile:v main',
+                    '-level 4.0',
+                    '-pix_fmt yuv420p',
+                    '-preset veryfast',
+                    '-g 48',
+                    '-keyint_min 48',
+                    '-sc_threshold 0',
+
+                    '-c:a aac',
+                    '-ar 48000',
+
+                    '-hls_time 6',
+                    '-hls_playlist_type vod',
+                    '-hls_flags independent_segments',
+                    '-start_number 0'
                 ])
                 .output(m3u8Path)
                 .on('end', resolve)
