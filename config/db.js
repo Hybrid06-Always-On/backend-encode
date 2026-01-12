@@ -50,6 +50,7 @@ const initPromise = (async () => {
 
 // query 모듈화
 module.exports = {
+    initPromise, // 외부에서 초기화 대기 가능하도록 export
     connection: async (query, values = []) => {
         // DB 초기화가 끝날 때까지 대기
         await initPromise;
