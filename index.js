@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const excel = require('./utils/excel');               // Excel 처리 유틸
 const videoProcessor = require('./utils/videoProcessor'); // 영상 처리 유틸
+const db = require('./config/db'); // DB 설정
 
 // 디렉토리 경로 정의 (NFS 마운트 경로: /video_data)
 const VIDEO_DIR = '/video_data/video';
@@ -18,6 +19,7 @@ if (!fs.existsSync(TEMP_DIR)) fs.mkdirSync(TEMP_DIR, { recursive: true });
  * Excel 데이터를 읽고, 각 행마다 영상 처리 수행
  */
 async function main() {
+    await db.initPromise; // DB 초기화 대기
     const rows = excel.readExcel(EXCEL_PATH); // Excel 읽기
     for (const row of rows) {
         const id = row['인덱스']; // 영상 고유 ID
