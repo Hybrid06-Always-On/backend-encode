@@ -14,4 +14,5 @@ RUN npm install
 COPY . .
 
 # 실행 명령 
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "index.js"]

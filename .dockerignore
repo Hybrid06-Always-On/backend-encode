@@ -6,3 +6,4 @@ Dockerfile
 .gitignore
 video_data
 temp_hls
+.env
