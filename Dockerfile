@@ -1,7 +1,4 @@
-FROM node:20-alpine
-
-# FFmpeg 설치 (Alpine Linux 패키지 관리자 사용)
-RUN apk add --no-cache ffmpeg
+FROM node:20
 
 # 작업 디렉토리 설정
 WORKDIR /usr/src/app
