@@ -1,9 +1,5 @@
 node_modules
 npm-debug.log
-Dockerfile
-.dockerignore
+.env
 .git
 .gitignore
-video_data
-temp_hls
-.env
