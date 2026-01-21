@@ -59,7 +59,10 @@ pipeline {
                         git config user.name "leeeeejieun"
 
                         # 이미지 태그 업데이트
-                        ../yq -i '(.. | select(has("repository") and .repository == "${DOCKER_IMAGE}")).tag = "${DOCKER_TAG}"' charts/backend/values.yaml
+                        ../yq -i '
+                        (.job.image | select(.repository == strenv(DOCKER_IMAGE))).tag = strenv(DOCKER_TAG) |
+                        (.cronjob.image | select(.repository == strenv(DOCKER_IMAGE))).tag = strenv(DOCKER_TAG)
+                        ' charts/backend/values.yaml
 
                         # 변경된 파일 스테이징
                         git add charts/backend/values.yaml
