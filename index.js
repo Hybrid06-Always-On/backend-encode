@@ -36,6 +36,10 @@ async function main() {
             console.error(`[${id}] 인코딩 실패:`, err.message);
         }
     }
+
+    // DB 연결 풀 종료 (프로세스가 종료되도록)
+    await db.close();
+    console.log('모든 작업이 완료되었습니다.');
 }
 
 // 메인 함수 실행

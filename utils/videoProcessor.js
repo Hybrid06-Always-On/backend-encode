@@ -4,8 +4,8 @@ const ffmpeg = require('fluent-ffmpeg');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 ffmpeg.setFfmpegPath(ffmpegPath);  // ffmpeg 경로 설정
 
-const db = require('../config/db');      // DB 연결 모듈
-const minio = require('../config/minio'); // MinIO 업로드 모듈
+const db = require('../config/db');          // DB 연결 모듈
+const storage = require('../config/storage'); // 통합 스토리지 모듈 (MinIO 또는 S3)
 
 module.exports = {
 
@@ -98,15 +98,15 @@ module.exports = {
                 .run();
         });
 
-        // 9. HLS 파일 MinIO 업로드
+        // 9. HLS 파일 업로드 (MinIO 또는 S3)
         const files = fs.readdirSync(outDir);
         const hlsObjectPrefix = `video_${id}`;
         for (const file of files) {
-            await minio.upload('hls', `${hlsObjectPrefix}/${file}`, path.join(outDir, file));
+            await storage.upload('hls', `${hlsObjectPrefix}/${file}`, path.join(outDir, file));
         }
 
-        // 10. 썸네일 업로드
-        await minio.upload('thumb', `video_${id}${path.extname(imageFileName)}`, sourceImagePath);
+        // 10. 썸네일 업로드 (MinIO 또는 S3)
+        await storage.upload('thumb', `video_${id}${path.extname(imageFileName)}`, sourceImagePath);
 
         // 11. DB 저장
         const createdDate = require('./excel').excelDateToJs(dateRaw);

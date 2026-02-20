@@ -1,6 +1,9 @@
 const mysql = require("mysql2/promise");
 
-const DB_NAME = process.env.DB_DATABASE || 'streaming';
+const environment = process.env.ENVIRONMENT || 'onpremise';
+const DB_NAME = environment === 'aws'
+    ? (process.env.AURORA_DATABASE || 'streaming')
+    : (process.env.DB_DATABASE || 'streaming');
 const TABLE_NAME = 'videos';
 
 let pool;
@@ -8,12 +11,25 @@ let pool;
 // DB 초기화 Promise (앱 시작 시 한 번 실행됨)
 const initPromise = (async () => {
     try {
+        // 환경에 따른 DB 설정
+        const dbConfig = environment === 'aws'
+            ? {
+                host: process.env.AURORA_HOST,
+                user: process.env.AURORA_USER,
+                password: process.env.AURORA_PASSWORD,
+            }
+            : {
+                host: process.env.DB_HOST,
+                user: process.env.DB_USER,
+                password: process.env.DB_PASSWORD,
+            };
+
+        console.log(`[DB] ${environment === 'aws' ? 'Aurora DB' : 'MySQL'} 연결 중...`);
+
         // DB 생성용 임시 커넥션 풀 (데이터베이스 지정 없음)
         const tempPool = mysql.createPool({
             connectionLimit: 1, // 최소한의 연결만 사용
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
+            ...dbConfig,
         });
 
         // 데이터베이스 생성
@@ -24,9 +40,7 @@ const initPromise = (async () => {
         // 실제 사용할 커넥션 풀 생성 (데이터베이스 포함)
         pool = mysql.createPool({
             connectionLimit: 10,
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
+            ...dbConfig,
             database: DB_NAME,
         });
 
@@ -66,6 +80,14 @@ module.exports = {
         } catch (err) {
             console.error("[DB] 쿼리 에러:", err);
             throw err;
+        }
+    },
+
+    // DB 연결 풀 종료
+    close: async () => {
+        await initPromise;
+        if (pool) {
+            await pool.end();
         }
     }
 };
