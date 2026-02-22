@@ -64,8 +64,14 @@ pipeline {
                         (.cronjob.image | select(.repository == strenv(DOCKER_IMAGE))).tag = strenv(DOCKER_TAG)
                         ' charts/backend/values-onprem.yaml
 
+                         ../yq -i '
+                        (.job.image | select(.repository == strenv(DOCKER_IMAGE))).tag = strenv(DOCKER_TAG) |
+                        (.cronjob.image | select(.repository == strenv(DOCKER_IMAGE))).tag = strenv(DOCKER_TAG)
+                        ' charts/backend/values-aws.yaml
+
                         # 변경된 파일 스테이징
                         git add charts/backend/values-onprem.yaml
+                        git add charts/backend/values-aws.yaml
                         
                         # 변경 사항이 있는 경우에만 커밋 및 푸시 진행
                         if [ -n "\$(git status --porcelain)" ]; then
