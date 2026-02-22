@@ -8,7 +8,7 @@ const db = require('./config/db'); // DB 설정
 // 디렉토리 경로 정의 (NFS 마운트 경로: /video_data)
 const VIDEO_DIR = '/video_data/video';
 const IMAGE_DIR = '/video_data/image';
-const EXCEL_PATH = '/video_data/video_matadata.xlsx';
+const EXCEL_PATH = '/video_data/video_metadata.xlsx';
 const TEMP_DIR = process.env.TEMP_DIR || path.join(__dirname, 'temp_hls'); // 임시 HLS 저장
 
 // TEMP_DIR 없으면 생성
